@@ -1,18 +1,10 @@
 package com.animuscyberspace.trackme;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,8 +17,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         title = (TextView) findViewById(R.id.app_name_and_version);
         initViews();
-
-
     }
     private void initViews() {
         PackageManager pm = getPackageManager();
