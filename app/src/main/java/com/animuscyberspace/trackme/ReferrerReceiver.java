@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Trace;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +29,8 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 public class ReferrerReceiver extends BroadcastReceiver {
-    public static final String ACTION_UPDATE_DATA = "ACTION_UPDATE_DATA";
     private static final String ACTION_INSTALL_REFERRER = "com.android.vending.INSTALL_REFERRER";
-    private static final String KEY_REFERRER = "referrer";
+
 
     public ReferrerReceiver() {
     }
@@ -50,35 +51,19 @@ public class ReferrerReceiver extends BroadcastReceiver {
             return;
         }
 
-
-        Toast.makeText(context,(String) extras.get(KEY_REFERRER),Toast.LENGTH_LONG).show();
-         String value = (String) extras.get(KEY_REFERRER);
-
-        String[] arrOfStr = value.split("&", 2);
-
-        for (String a : arrOfStr)
-            System.out.println("prak24"+a);
-
-        String[] utm_source=arrOfStr[0].split("=");
-        String utm_source_value = utm_source[1];
-        System.out.println("prak24 utm_source_value : "+utm_source_value);
-
-
-        String[] tracking_id=arrOfStr[1].split("=");
-        String tracking_id_value = tracking_id[1];
-        System.out.println("prak24 tracking_id_value : "+tracking_id_value);
-
         HashMap<String,String> params = new HashMap<>();
-        params.put("utm_source",utm_source_value);
-        params.put("tracking_id",tracking_id_value);
+        String trackValue="";
+        if (extras != null) {
+            for (String key : extras.keySet()) {
+                String value = extras.getString(key);
+                Log.d("prak24", "Key: " + key + " Value: " + value);
+                params.put(key,value);
+                trackValue=trackValue+" "+ key+ " "+ value;
+            }
+        }
+        Toast.makeText(context,trackValue,Toast.LENGTH_LONG).show();
 
-
-        new PerformNetworkCall().execute(params,context);
-
-        Application.setReferrerDate(context.getApplicationContext(), new Date().getTime());
-        Application.setReferrerData(context.getApplicationContext(), (String) extras.get(KEY_REFERRER));
-
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(ACTION_UPDATE_DATA));
+         new PerformNetworkCall().execute(params,context);
     }
 
 
@@ -127,19 +112,21 @@ public class ReferrerReceiver extends BroadcastReceiver {
     }
 
     private String getPostDataString(HashMap<String, String> params,Context context) throws UnsupportedEncodingException{
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if (first)
-                first = false;
-            else
-                result.append("&");
+        String  result = (String) new JSONObject(params).toString();
+//        boolean first = true;
+//        for(Map.Entry<String, String> entry : params.entrySet()){
+//            if (first)
+//                first = false;
+//            else
+//                result.append("&");
+//
+//            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+//            result.append("=");
+//            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+//        }
 
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-        }
-        return result.toString();
+
+        return result;
     }
 
 

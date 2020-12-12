@@ -22,19 +22,5 @@
         android:textSize="18sp"
         android:typeface="serif" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
-            android:padding="16dp"
-            android:text="@string/loading"
-            android:textIsSelectable="true"
-            android:typeface="serif" />
-    </ScrollView>
 
 </LinearLayout>
