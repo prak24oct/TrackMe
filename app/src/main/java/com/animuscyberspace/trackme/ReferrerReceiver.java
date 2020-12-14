@@ -48,23 +48,24 @@ public class ReferrerReceiver extends BroadcastReceiver {
         }
 
        /* Feteching params at runtime and sending in body of post request*/
-        HashMap<String,String> params = new HashMap<>();
         String trackValue="";
         if (extras != null) {
             for (String key : extras.keySet()) {
                 String value = extras.getString(key);
                 Log.d("prak24", "Key: " + key + " Value: " + value);
-                params.put(key,value);
                 trackValue=trackValue+" "+ key+ " "+ value;
             }
         }
         Toast.makeText(context,trackValue,Toast.LENGTH_LONG).show();
 
+
+        HashMap<String,String> params = new HashMap<>();
+        params.put("utm_source",extras.getString("utm_source"));
+        params.put("tracking_id",extras.getString("tracking_id"));
+
         /*Performing Http Post Call */
          new PerformNetworkCall().execute(params,context);
     }
-
-
 
     public String  performPostCall(String requestURL,
                                    HashMap<String, String> postDataParams,Context context) {
